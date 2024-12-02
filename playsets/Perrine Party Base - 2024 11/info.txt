@@ -1,0 +1,291 @@
+{
+  "package":"Perrine Party Base - Dec 2024",
+  "version":"0.0.1",
+  "import":{},//All import package info
+  "part":[
+   
+    
+    {
+      "name":"Background tone",
+      "style":[
+         {"name":"Basic tone", "layer":[
+                                   {"name":"Horizontal gradient", "src":"background/horizontal-gradient.PNG", "color":"#ffc4dd",  "size":[W,H], }, 
+                                   {"name":"Solid", "src":"background/solid.PNG", "color":"#b7fffc",  "size":[W,H], },                                    
+                              ],
+                      "color":E,  "size":[W,H],
+         },
+	{"name":"Blossom", "layer":[
+                                   {"name":"Horizontal gradient", "src":"background/horizontal-gradient.PNG", "color":"#ffc4dd",  "size":[W,H], }, 
+                                   {"name":"Solid", "src":"background/solid.PNG", "color":"#ffffff",  "size":[W,H], },                                    
+                              ],
+                      "color":E,  "size":[W,H],
+         },
+         {"name":"Spring", "layer":[
+                                   {"name":"Horizontal gradient", "src":"background/horizontal-gradient.PNG", "color":"#d3ffa8",  "size":[W,H], }, 
+                                   {"name":"Solid", "src":"background/solid.PNG", "color":"#ffc4dd",  "size":[W,H], },
+                              ],
+                      "color":E,  "size":[W,H],
+         },
+
+      ],
+      "color":"#ffaabb",
+      "size":[W,H],
+      // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+    },
+
+
+
+
+    {
+      "name":"Background charm",
+      "style":[
+         {"name":"Blossom", "src":"background/blossom.PNG", "color":"#ff6bab",  "size":[W,H], }, 
+         {"name":"Starry", "src":"background/starry.PNG", "color":"#ffffaa",  "size":[W,H], }, 
+         {"name":"Basic tone", "layer":[
+                                   {"name":"Blossom", "src":"background/blossom.PNG", "color":"#ff6bab",  "size":[W,H], }, 
+                                   {"name":"Starry", "src":"background/starry.PNG", "color":"#ffffaa",  "size":[W,H], }, 
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+      ],
+      "color":"#ffaabb",
+      "size":[W,H],
+      // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+    },
+
+
+    
+    
+    {
+      "name":"Feet & Shoes",
+      "style":[
+         {"name":"1A", "layer":[
+                                   {"name":"Line", "src":"feet-shoes/li-1a.PNG", "color":E,  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Skin shadow", "src":"feet-shoes/fi1/shadow.PNG", "color":"#000000",  "opacity":0.2,  "size":[W,H], },
+                                   {"name":"Shoes", "src":"feet-shoes/fi1/shoes.PNG", "color":"#3a1c23",  "size":[W,H], },
+                                   {"name":"Decoration 2", "src":"feet-shoes/fi1/deco2.PNG", "color":"#ffeeeb", "use":0, "size":[W,H], },
+                                   {"name":"Decoration 1", "src":"feet-shoes/fi1/deco1.PNG", "color":"#ffeeeb", "use":false, "size":[W,H], },
+                                   {"name":"Socks", "src":"feet-shoes/fi1/socks.PNG", "color":"#ffffff", "use":0, "size":[W,H], },
+                                   {"name":"High knee", "src":"feet-shoes/fi1/high knee.PNG", "color":"#ffffff", "use":0, "size":[W,H], },
+                                   {"name":"Skin", "src":"feet-shoes/fi1/skin.PNG", "color":"#ffeeeb",  "size":[W,H], },
+                                   
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+         {"name":"1", "layer":[
+                                   {"name":"Line", "src":"feet-shoes/li-1.PNG", "color":E,  "size":[W,H], },
+                                   {"name":"Skin shadow", "src":"feet-shoes/fi1/shadow.PNG", "color":"#000000",  "opacity":0.2,  "size":[W,H], },
+                                   {"name":"Shoes", "src":"feet-shoes/fi1/shoes.PNG", "color":"#3a1c23",  "size":[W,H], },
+                                   {"name":"Socks", "src":"feet-shoes/fi1/socks.PNG", "color":"#ffffff", "use":0, "size":[W,H], },
+                                   {"name":"High knee", "src":"feet-shoes/fi1/high knee.PNG", "color":"#ffffff", "use":1, "size":[W,H], },
+                                   {"name":"Skin", "src":"feet-shoes/fi1/skin.PNG", "color":"#ffeeeb",  "size":[W,H], },
+
+                                   
+                              ],
+                      "color":E,  "size":[W,H],
+         },
+         {"name":"2", "layer":[
+                                   {"name":"Line", "src":"feet-shoes/li-2.PNG", "color":E,  "size":[W,H], }, 
+                                   {"name":"Skin shadow", "src":"feet-shoes/fi2/shadow.PNG", "color":"#000000",  "opacity":0.2,  "size":[W,H], },
+                                   {"name":"Shoes", "src":"feet-shoes/fi2/shoes.PNG", "color":"#3a1c23", "use":0,  "size":[W,H], },
+                                   {"name":"Stripe", "src":"feet-shoes/fi2/stripe.PNG", "color":"#fee2e9", "use":0, "size":[W,H], },
+                                   {"name":"Deco 1", "src":"feet-shoes/fi2/deco1.PNG", "color":"#ffffff", "use":1, "size":[W,H], },
+                                   {"name":"Socks", "src":"feet-shoes/fi2/socks.PNG", "color":"#ffffff", "use":1, "size":[W,H], },
+                                   {"name":"Skin", "src":"feet-shoes/fi2/skin.PNG", "color":"#ffeeeb",  "size":[W,H], },
+                                   
+                              ],
+                      "color":E,  "size":[W,H],
+         },
+         {"name":"2A", "layer":[
+                                   {"name":"Line", "src":"feet-shoes/li-2a.PNG", "color":E, "use":0, "size":[W,H], },
+                                   {"name":"Skin shadow", "src":"feet-shoes/fi2/shadow.PNG", "color":"#000000",  "opacity":0.2,  "size":[W,H], },
+                                   {"name":"Shoes", "src":"feet-shoes/fi2/shoes.PNG", "color":"#3a1c23",  "size":[W,H], },
+                                   {"name":"Stripe", "src":"feet-shoes/fi2/stripe.PNG", "color":"#fee2e9", "use":1, "size":[W,H], },
+                                   {"name":"Deco 1", "src":"feet-shoes/fi2/deco1.PNG", "color":"#ffffff", "use":1, "size":[W,H], },
+                                   {"name":"Socks", "src":"feet-shoes/fi2/socks.PNG", "color":"#ffffff", "use":1, "size":[W,H], },
+                                   {"name":"Skin", "src":"feet-shoes/fi2/skin.PNG", "color":"#ffeeeb",  "size":[W,H], },
+                                   
+                              ],
+                      "color":E,  "size":[W,H],
+         },
+
+
+      ],
+      "color":"#683b47",
+      "size":[W,H],
+      // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+    },
+
+
+
+
+
+    {
+      "name":"Body Pose Dress",
+      "style":[
+         //{"name":"1", "src":"body-pose-dress/li-b1.PNG", "color":E},
+         {"name":"1", "layer":[
+                                   {"name":"Line", "src":"body-pose-dress/li-1.PNG", "color":E,  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Skin shadow", "src":"body-pose-dress/fi1/skin-shadow.PNG", "color":"#000000", "opacity":0.2, "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule                                    
+                                   {"name":"Skin", "src":"body-pose-dress/fi1/skin.PNG", "color":"#ffeeeb",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Dress shadow", "src":"body-pose-dress/fi1/dress-shadow.PNG", "color":"#000000", "opacity":0.2, "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule   
+                                   {"name":"Dress", "src":"body-pose-dress/fi1/dress.PNG", "color":"#a1646c",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Frilly", "src":"body-pose-dress/fi1/frilly.PNG", "color":"#ef7c93",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Cotton", "src":"body-pose-dress/fi1/cotton.PNG", "color":"#ffffff",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Bow", "src":"body-pose-dress/fi1/bow.PNG", "color":"#ef908e",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Necklace", "src":"body-pose-dress/fi1/necklace.PNG", "color":"#b2666b",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Pendant", "src":"body-pose-dress/fi1/pendant.PNG", "color":"#fdffe0",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+         {"name":"2A", "layer":[
+                                   {"name":"line", "src":"body-pose-dress/li-2a.PNG", "color":E,  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Shadow", "src":"body-pose-dress/fi2/shadow.PNG", "color":"#000000", "opacity":0.2, "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule   
+                                   {"name":"Bow", "src":"body-pose-dress/fi2/bow.PNG", "color":"#ef908e",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Necklace", "src":"body-pose-dress/fi2/necklace.PNG", "color":"#b2666b",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Cotton", "src":"body-pose-dress/fi2/cotton.PNG", "color":"#ffffff",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Dress", "src":"body-pose-dress/fi2/dress.PNG", "color":"#a1646c",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Frilly", "src":"body-pose-dress/fi2/frilly.PNG", "color":"#ef7c93",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Skin", "src":"body-pose-dress/fi2/skin.PNG", "color":"#ffeeeb",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+         {"name":"2B", "layer":[
+                                   {"name":"Line", "src":"body-pose-dress/li-2b.PNG", "color":E,  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Shadow", "src":"body-pose-dress/fi2/shadow.PNG", "color":"#000000", "opacity":0.2, "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule   
+                                   {"name":"Bow", "src":"body-pose-dress/fi2/bow.PNG", "color":"#ef908e",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Necklace", "src":"body-pose-dress/fi2/necklace.PNG", "color":"#b2666b",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Cotton", "src":"body-pose-dress/fi2/cotton.PNG", "color":"#ffffff",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Dress", "src":"body-pose-dress/fi2/dress.PNG", "color":"#a1646c",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Frilly", "src":"body-pose-dress/fi2/frilly.PNG", "color":"#ef7c93",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Skin", "src":"body-pose-dress/fi2/skin.PNG", "color":"#ffeeeb",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+      ],
+      "color":"#683b47",
+      "size":[W,H],
+      // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+    },
+    
+    
+
+
+
+
+    {
+      "name":"Eyes",
+      "style":[
+        {"name":"1", "layer":[
+                                   {"name":"1", "src":"eye/li-b1.PNG", "color":E},
+                                   {"name":"Spark", "src":"eye/fi1/spark.PNG", "color":"#ffffff",  "size":[W,H], },
+                                   {"name":"Iris", "src":"eye/fi1/iris.PNG", "color":"#1cf2ca",  "size":[W,H], },
+                                   {"name":"Gradient", "src":"eye/fi1/gradient.PNG", "color":"#24dac3",  "size":[W,H], },
+                                   {"name":"Tone", "src":"eye/fi1/tone.PNG", "color":"#4ab0af",  "size":[W,H], },
+                                   {"name":"White", "src":"eye/fi1/white.PNG", "color":"#ecfbff",  "size":[W,H], },
+                                   
+                              ],
+                      "color":E,  "size":[W,H], 
+         },
+         
+      ],
+      "color":"#683b47",
+      "size":[W,H],
+      
+    },
+    
+    
+    {
+      "name":"Mouth & Nose",
+      "style":[
+         //{"name":"1 Neat smile", "src":"mouth-nose/li-mn1.PNG", "color":"#ff0044"},
+         {"name":"Neat smile", "layer":[
+                                   {"name":"Nose", "src":"mouth-nose/li-n1.PNG", "color":E,  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Mouth", "src":"mouth-nose/li-m1.PNG", "color":"#ff3369",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+         //{"name":"2 Gentle smile", "src":"mouth-nose/li-mn2.PNG"},
+         {"name":"Gentle smile", "layer":[
+                                   {"name":"Nose", "src":"mouth-nose/li-n2.PNG", "color":E,  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Mouth", "src":"mouth-nose/li-m2.PNG", "color":"#ff3369",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+      ],
+      "color":"#f0a3a3",
+      "size":[W,H],
+      // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+    },
+    
+
+
+
+
+
+
+
+    {
+      "name":"Front Hair",
+      "style":[
+         {"name":"1", "layer":[
+                                   {"name":"Line", "src":"hair-front/li-1.PNG", "color":E,  "size":[W,H], },
+                                   {"name":"Gloss 2", "src":"hair-front/fi1/gloss2.PNG", "color":"#ffffff",  "size":[W,H], },
+                                   {"name":"Gloss 1", "src":"hair-front/fi1/gloss1.PNG", "color":"#f8c4ce", "opacity":0.8,  "size":[W,H], },
+                                   {"name":"Gradient", "src":"hair-front/fi1/gradient.PNG", "color":"#fe0560",  "size":[W,H], },
+                                   {"name":"Fill", "src":"hair-front/fi1/tone.PNG", "color":"#f0aebc",  "size":[W,H], },
+                                   
+                                   
+                              ],
+                      "color":E,  "size":[W,H],
+         },
+      ],
+      "color":"#683b47",
+      "size":[W,H],
+      
+    },
+    
+    
+    {
+      "name":"Side Hair & Top Hair",
+      "style":[
+         {"name":"1", "layer":[
+                                   {"name":"Line", "src":"hair-side/li-1.PNG", "color":E,  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   //{"name":"Mouth", "src":"mouth-nose/li-m1.PNG", "color":"#ff3369",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+      ],
+      "color":"#683b47",
+      "size":[W,H],
+      // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+    },
+
+
+    {
+      "name":"Rear Side Hair",
+      "style":[
+         {"name":"1", "layer":[
+                                   {"name":"Line", "src":"hair-rear-side/li-1.PNG", "color":"#a1455d",  "size":[W,H], },
+                                   {"name":"Bow", "src":"hair-rear-side/fi1/bow.PNG", "color":"#522833",  "size":[W,H], },
+                                   {"name":"Fill", "src":"hair-rear-side/fi1/tone.PNG", "color":"#f0aebc",  "size":[W,H], },
+                                   
+                              ],
+                      "color":E,  "size":[W,H],
+         },
+      ],
+      "color":"#683b47",
+      "size":[W,H],
+      
+    },
+
+
+    
+    
+    
+  ]
+}

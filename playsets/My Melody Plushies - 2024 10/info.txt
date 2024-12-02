@@ -1,0 +1,110 @@
+{
+  "name":"My Melody Plushies 2024 11",
+  "description":"",
+  "version":"0.0.1",
+  "size":[1200,1321], // [width,height]
+  "import":{}, // All import package info
+  "part":[
+    
+    {
+      "name":"Background",
+      "style":[
+         {"name":"Grid background", "layer":[
+                                   {"name":"Text", "src":"layer/text.PNG", "color":"#ffaac3",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Grid", "src":"layer/Grid.PNG", "color":"#fff6f3",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Solid", "src":"layer/Grid background.PNG", "color":"#ffffff",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+      ],
+      "color":"#ffaabb",
+      "size":[W,H],
+      // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+    },
+
+
+    
+
+
+    {
+      "name":"Body",
+      "style":[
+         {"name":"1", "layer":[
+                                   {"name":"Pistil", "src":"layer/pistil.PNG", "color":"#ffd9b8",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Flower", "src":"layer/Flower.PNG", "color":"#fcfcfc",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Line", "src":"layer/White line art.PNG", "color":"#fff0f2",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Lace hoody", "src":"layer/Lace hoody.PNG", "color":"#ffffff",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Lace bow", "src":"layer/lace bow.PNG", "color":"#fcfcfc",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Big bow", "src":"layer/Big bows.PNG", "color":"#ffd8e3",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Small bow 1", "src":"layer/bow top.PNG", "color":"#fcf2f3",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Small bow 2", "src":"layer/bow tail.PNG", "color":"#fcf2f3",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Hoody", "src":"layer/pink hoody.PNG", "color":"#fdb3cf",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+                                   {"name":"Paw", "src":"layer/footprints.PNG", "color":"#fbc2d8",  "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule                                     
+                                   {"name":"Body", "src":"layer/body.PNG", "color":"#fdfafa", "size":[W,H], }, // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule                                    
+                                   
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+      ],
+      "color":"#683b47",
+      "size":[W,H],
+      // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+    },
+    
+    
+    
+
+
+
+
+
+
+
+    {
+      "name":"Eyes",
+      "style":[
+         {"name":"1", "layer":[
+                                   {"name":"Lashes", "src":"layer/lashes.PNG", "color":"#a53e81",  },
+                                   {"name":"Eye sparkle", "src":"layer/eye gloss spark.PNG", "color":"#ffffff",  },
+                                   {"name":"Iris", "src":"layer/Iris.PNG", "color":"#ffd8eb",  },
+                                   {"name":"Eyes", "src":"layer/eyes.PNG", "color":"#a15e67",  },
+                                   
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+         
+      ],
+      "color":"#683b47",
+      "size":[W,H],
+      // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+    },
+    
+    
+    {
+      "name":"Mouth & Nose",
+      "style":[
+         {"name":"1", "layer":[
+                                   {"name":"Nose", "src":"layer/nose.PNG", "color":"#FFD9b8",  "size":[W,H], },
+                                   {"name":"Mouth", "src":"layer/mouth.png", "color":"#9c3578",  "size":[W,H], },
+                                   {"name":"Nose blush", "src":"layer/nose blush.PNG", "color":"#Fee7ea",  "size":[W,H], },
+                                   {"name":"Blush", "src":"layer/blush.PNG", "color":"#Fee7ea",  "size":[W,H], },
+                                   
+                              ],
+                      "color":E,  "size":[W,H], // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+         },
+      ],
+      "color":"#f0a3a3",
+      "size":[W,H],
+      // zone crop, pivot point, color replace default, texture replace, filt rule, composite rule  
+    },
+    
+
+
+
+
+
+    
+    
+    
+  ]
+}
