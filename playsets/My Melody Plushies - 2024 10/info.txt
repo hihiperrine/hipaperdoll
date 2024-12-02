@@ -85,7 +85,7 @@
       "style":[
          {"name":"1", "layer":[
                                    {"name":"Nose", "src":"layer/nose.PNG", "color":"#FFD9b8",  "size":[W,H], },
-                                   {"name":"Mouth", "src":"layer/mouth.png", "color":"#9c3578",  "size":[W,H], },
+                                   {"name":"Mouth", "src":"layer/mouth.PNG", "color":"#9c3578",  "size":[W,H], },
                                    {"name":"Nose blush", "src":"layer/nose blush.PNG", "color":"#Fee7ea",  "size":[W,H], },
                                    {"name":"Blush", "src":"layer/blush.PNG", "color":"#Fee7ea",  "size":[W,H], },
                                    
