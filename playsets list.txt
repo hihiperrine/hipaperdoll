@@ -1,4 +1,4 @@
-listPlaysets=[
+[
   ["My Melody Plushies - 2024 10","playsets/My Melody Plushies - 2024 10"],
   ["Perrine Party Base - 2024 11","playsets/Perrine Party Base - 2024 11"],
 ]
