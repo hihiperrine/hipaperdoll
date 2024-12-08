@@ -1,0 +1,9 @@
+Type 1:
+  Multiple images in organized folders
+
+Type 2:
+  Process Cropped images in organized folders
+  included addition positon info. This is auto generated after build fromtype 1
+
+Type 3:
+  Compressed zip bitmap ->  zmp   zipmap

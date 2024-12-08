@@ -1,5 +1,5 @@
 {
-  "package":"Perrine Party Base - Dec 2024",
+  "name":"Perrine Party Base - Dec 2024",
   "version":"0.0.1",
   "import":{},//All import package info
   "part":[
