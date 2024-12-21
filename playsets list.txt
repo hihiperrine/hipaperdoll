@@ -11,4 +11,16 @@
    "type":"raw"  // folder,   raw, zipmap
   },
 
+  {"name":"My Melody Plushies - 2024 12 Zipmap", 
+   "icon":"", 
+   "path":"playsets/My Melody Plushies.zip",
+   "type":"zipmap"  // folder,   raw, zipmap
+  },
+
+  {"name":"Perrine Party Base - 2024 12 zmp", 
+   "icon":"", 
+   "path":"playsets/Perrine Party Base.zip",
+   "type":"zipmap"  // folder,   raw, zipmap
+  },
+
 ]
