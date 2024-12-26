@@ -2757,7 +2757,9 @@ class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export
       var hBg=kProgress?hProgress:hNormal;
       
       var xBg=(W-WCo)/2,yBg=(H-hBg)/2;
-      var dBg=aE(bg); pE(dBg,[xBg,yBg,E,E, WCo,hBg],1);noSelect(dBg);
+      var dBg0=aE(bg); pE(dBg0,[xBg-60,yBg-60,E,E, WCo+120,hBg+120],1);//noSelect(dBg);
+      var dBg=aE(dBg0); pE(dBg,[xBg,yBg,E,E, WCo,hBg],1);//noSelect(dBg);
+      co(dBg0,theme.title,rBo,1.5,theme.buttonL1); sh(dBg,32,"rgba(0,0,0,0.5)",0,0,0)
       co(dBg,theme.title,rBo,1.5,theme.buttonL1); sh(dBg,32,"rgba(0,0,0,0.5)",0,0,0)
       
       eLay(dBg,["bacolo",[2,theme.buttonD2,theme.title] ]);
@@ -2778,6 +2780,7 @@ class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export
       function RClose(){try{This.onCancel();}catch(_){}hide(bg);clean(bg);}
       this.close=RClose;
       This.onOK=D(dat["onOK"],RClose);
+      RatRun(dBg0,ERUN,ERUN,ERUN);
       //RatRun(dBg,ERUN,ERUN,ERUN);
 	  RatRun(bg,ERUN,RClose,ERUN);
       var teTitle=aE(dBg);sEAO(teTitle,[maLR,paB*4,E,E, E,fosi],0,E);
