@@ -2699,7 +2699,7 @@ window.addEventListener("keydown",function(e){
 window.addEventListener("keyup",function(e){if (e.key=="Control"){kCtrl=false;}else if (e.key=="Alt"){kAlt=false;}else if (e.key=="Shift"){kShift=false;}});
 
 
-
+var dNoti=aE(body);pE(dNoti,[0,0,0,0,1,1],2);dNoti.style.zIndex=100;hide(dNoti);
 
 class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export, progress process
   
@@ -2745,7 +2745,8 @@ class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export
       if(mulLiInfo){nLiInfo=Min((kDes||kName)?3:6,(sInfo.match(new RegExp(E10, "g"))||[]).length);}
       sInfo=sInfo.replaceAll(E10,"<br>");
       
-      var bg=aE(body);pE(bg,[0,0,0,0,1,1],2);bg.style.zIndex=1000;
+      //var bg=aE(body);pE(bg,[0,0,0,0,1,1],2);bg.style.zIndex=1000;
+      var bg=dNoti;
       this.bg=bg;
       bg.innerHTML="";show(bg);co(bg,"#00000088");
       var paS=wLogo/8*2,WCo=mWH*0.9-paB*2-paS*2;
@@ -2756,24 +2757,25 @@ class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export
       var hBg=kProgress?hProgress:hNormal;
       
       var xBg=(W-WCo)/2,yBg=(H-hBg)/2;
-      var dBg=aE(bg); pE(dBg,[xBg,yBg,E,E, WCo,hBg],1);noSelect(dBg);
+      var dBg=aE(bg); pE(dBg,[xBg,yBg,E,E, WCo,hBg],1);//noSelect(dBg);
       co(dBg,theme.title,rBo,1.5,theme.buttonL1); sh(dBg,32,"rgba(0,0,0,0.5)",0,0,0)
       
       eLay(dBg,["bacolo",[2,theme.buttonD2,theme.title] ]);
-      /*var DecoLT= new _ThemeTop(dBg,[-fosi*0.8,-fosi*0.5,0,E, fosi*2, fosi*2],1,  sImg_corner,fosi*2+"px","0%","no-repeat");;
+      var DecoLT= new _ThemeTop(dBg,[-fosi*0.8,-fosi*0.5,0,E, fosi*2, fosi*2],1,  sImg_corner,fosi*2+"px","0%","no-repeat");;
       var DecoRT= new _ThemeTop(dBg,[E,-fosi*0.2,-fosi*0.8,E, fosi*2, fosi*2],1,  sImg_corner,fosi*2+"px","0%","no-repeat");
       eLay(DecoRT.bg,["rota",90]);
       var DecoRB= new _ThemeTop(dBg,[E,0,0,E, (paB*4+fosi*6)*(389/300), paB*4+fosi*6],1,  sImg_cornerRB,"100%","0%","no-repeat");
       opac(DecoRB.bg,0.2);DecoRB.bg.style.zIndex=0;
       var DecoRB1= new _ThemeTop(dBg,[E,E,0,0, WCo*(389/300)*0.6,WCo*0.6],1,  sImg_cornerRB,"100%","0%","no-repeat");
-      opac(DecoRB1.bg,0.3);DecoRB1.bg.style.zIndex=0;*/
+      opac(DecoRB1.bg,0.3);DecoRB1.bg.style.zIndex=0;
       
       var MarkRT= new _ThemeTop(dBg,[E,paB*2.2,maLR*2,E, fosi*3, fosi*2.4],1,  sImg_check,fosi*2.4+"px","0%","no-repeat");;
       this.showMark=function(){show(MarkRT.bg)}
       this.hideMark=function(){hide(MarkRT.bg)}
       this.hideMark();
       
-      function RClose(){try{This.onCancel();}catch(_){}body.removeChild(bg);clean(bg);}
+      //function RClose(){try{This.onCancel();}catch(_){}body.removeChild(bg);clean(bg);}
+      function RClose(){try{This.onCancel();}catch(_){}hide(bg);clean(bg);}
       this.close=RClose;
       This.onOK=D(dat["onOK"],RClose);
       RatRun(dBg,ERUN,ERUN,ERUN); RatRun(bg,ERUN,RClose,ERUN);
