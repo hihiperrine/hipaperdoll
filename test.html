@@ -2606,8 +2606,7 @@ class _Button{
     this.bg.style.fontWeight="bold";
     This.dThemeTop=new _ThemeTop(this.bg,[0,(-fosi/2)*0.3,E,E, 1,fosi],1,  sImg_snowBT,"50% 40%",(30*nButton)%100+"%");
     bora(This.dThemeTop.bg,16);
-    //this.bg.onclick=function(){setTimeout(function(){This.bg.blur();},200);onclick();};
-    RatRun(this.bg,ERUN,function(){setTimeout(function(){This.bg.blur();},200);onclick();},ERUN);
+    this.bg.onclick=function(){setTimeout(function(){This.bg.blur();},200);onclick();};
   }
 }
 
@@ -2777,7 +2776,9 @@ class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export
       function RClose(){try{This.onCancel();}catch(_){}body.removeChild(bg);clean(bg);}
       this.close=RClose;
       This.onOK=D(dat["onOK"],RClose);
-      RatRun(dBg,ERUN,ERUN,ERUN); RatRun(bg,ERUN,RClose,ERUN);
+      //RatRun(dBg,ERUN,ERUN,ERUN); 
+	  //bg.onclick=RClose;
+	  //RatRun(bg,ERUN,RClose,ERUN);
       var teTitle=aE(dBg);sEAO(teTitle,[maLR,paB*4,E,E, E,fosi],0,E);
       inht(teTitle,"<font>"+sTitle+"</font>", fosi+"px", sAlignTitle);
       
