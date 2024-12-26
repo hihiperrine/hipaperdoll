@@ -2745,9 +2745,9 @@ class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export
       if(mulLiInfo){nLiInfo=Min((kDes||kName)?3:6,(sInfo.match(new RegExp(E10, "g"))||[]).length);}
       sInfo=sInfo.replaceAll(E10,"<br>");
       
-      var bg=aE(body);pE(bg,[0,0,0,0,1,1],2);bg.style.zIndex=1000;
+      var bg=aE(body);pE(bg,[0,0,0,0,1,1],1);bg.style.zIndex=1000;
       this.bg=bg;
-      bg.innerHTML="";show(bg);co(bg,"#00000088");co(bg,"#00ff00aa")
+      bg.innerHTML="";show(bg);co(bg,"#00000088");
       var paS=wLogo/8*2,WCo=mWH*0.9-paB*2-paS*2;
       if(kMobileCompatible){}
       
