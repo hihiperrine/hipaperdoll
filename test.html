@@ -2606,7 +2606,8 @@ class _Button{
     this.bg.style.fontWeight="bold";
     This.dThemeTop=new _ThemeTop(this.bg,[0,(-fosi/2)*0.3,E,E, 1,fosi],1,  sImg_snowBT,"50% 40%",(30*nButton)%100+"%");
     bora(This.dThemeTop.bg,16);
-    this.bg.onclick=function(){setTimeout(function(){This.bg.blur();},200);onclick();};
+    //this.bg.onclick=function(){setTimeout(function(){This.bg.blur();},200);onclick();};
+    RatRun(this.bg,ERUN,function(){setTimeout(function(){This.bg.blur();},200);onclick();},ERUN);
   }
 }
 
@@ -2699,7 +2700,7 @@ window.addEventListener("keydown",function(e){
 window.addEventListener("keyup",function(e){if (e.key=="Control"){kCtrl=false;}else if (e.key=="Alt"){kAlt=false;}else if (e.key=="Shift"){kShift=false;}});
 
 
-var dNoti=aE(body);pE(dNoti,[0,0,0,0,1,1],2);dNoti.style.zIndex=100;hide(dNoti);
+
 
 class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export, progress process
   
@@ -2745,8 +2746,7 @@ class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export
       if(mulLiInfo){nLiInfo=Min((kDes||kName)?3:6,(sInfo.match(new RegExp(E10, "g"))||[]).length);}
       sInfo=sInfo.replaceAll(E10,"<br>");
       
-      //var bg=aE(body);pE(bg,[0,0,0,0,1,1],2);bg.style.zIndex=1000;
-      var bg=dNoti;
+      var bg=aE(body);pE(bg,[0,0,0,0,1,1],2);bg.style.zIndex=1000;
       this.bg=bg;
       bg.innerHTML="";show(bg);co(bg,"#00000088");
       var paS=wLogo/8*2,WCo=mWH*0.9-paB*2-paS*2;
@@ -2757,9 +2757,7 @@ class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export
       var hBg=kProgress?hProgress:hNormal;
       
       var xBg=(W-WCo)/2,yBg=(H-hBg)/2;
-      var dBg0=aE(bg); pE(dBg0,[xBg-60,yBg-60,E,E, WCo+120,hBg+120],1);//noSelect(dBg);
-      var dBg=aE(dBg0); pE(dBg,[xBg,yBg,E,E, WCo,hBg],1);//noSelect(dBg);
-      co(dBg0,theme.title,rBo,1.5,theme.buttonL1); sh(dBg,32,"rgba(0,0,0,0.5)",0,0,0)
+      var dBg=aE(bg); pE(dBg,[xBg,yBg,E,E, WCo,hBg],1);noSelect(dBg);
       co(dBg,theme.title,rBo,1.5,theme.buttonL1); sh(dBg,32,"rgba(0,0,0,0.5)",0,0,0)
       
       eLay(dBg,["bacolo",[2,theme.buttonD2,theme.title] ]);
@@ -2776,13 +2774,10 @@ class _Popbox{//Popub box for many purpose: alert, confirm, prompt, input export
       this.hideMark=function(){hide(MarkRT.bg)}
       this.hideMark();
       
-      //function RClose(){try{This.onCancel();}catch(_){}body.removeChild(bg);clean(bg);}
-      function RClose(){try{This.onCancel();}catch(_){}hide(bg);clean(bg);}
+      function RClose(){try{This.onCancel();}catch(_){}body.removeChild(bg);clean(bg);}
       this.close=RClose;
       This.onOK=D(dat["onOK"],RClose);
-      RatRun(dBg0,ERUN,ERUN,ERUN);
-      //RatRun(dBg,ERUN,ERUN,ERUN);
-	  RatRun(bg,ERUN,RClose,ERUN);
+      RatRun(dBg,ERUN,ERUN,ERUN); RatRun(bg,ERUN,RClose,ERUN);
       var teTitle=aE(dBg);sEAO(teTitle,[maLR,paB*4,E,E, E,fosi],0,E);
       inht(teTitle,"<font>"+sTitle+"</font>", fosi+"px", sAlignTitle);
       
