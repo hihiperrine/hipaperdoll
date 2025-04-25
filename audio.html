@@ -1,6 +1,7 @@
 <!DOCUMENT html>
 <html>
 <body>
+<audio controls id="auwhite" src="sfx/white_hq_10s.wav"></audio>
 <audio controls id="teAu" src="sfx/angel_choir.mp3"></audio>
 <div id="ct" style='background-color:#0ff'></div>
 <script>
@@ -180,7 +181,7 @@ function changeAudio(){
   
   //
   const gainNode = audioCtx.createGain();
-  gainNode.gain.value = 0.4;
+  gainNode.gain.value = 1;
   gainNode.connect(audioCtx.destination);
   
   //const buffNode = audioCtx.createAudioBufferSourceNode
@@ -190,7 +191,12 @@ function changeAudio(){
   myAudio.play();
 }
 //document.body.onclick=function(){audioGenerate();loadSound("sfx/white_hq_10s.wav")};
-document.body.onclick=function(){changeAudio()};
+document.body.onclick=function(){changeAudio();
+  var aw=document.getElementById("auwhite");
+  aw.play();
+  aw.volume=0.5;
+  aw.loop=true;
+};
 
 //loadDogSound("sfx/white_4m.mp3");
 </script>
