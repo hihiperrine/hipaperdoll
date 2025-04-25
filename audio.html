@@ -1,0 +1,155 @@
+<!DOCUMENT html>
+<html>
+<body>
+<script>
+const E=null;
+const body=document.body;
+function D(v,x){return v==E?x:v;} //[D]efault value
+
+var actx;
+try{actx=new AudioContext();}catch(e){}//alert('Web Audio API is not supported in this browser');}
+
+
+function GETraw(src,onload,token,onTimeout,msTimeout,kSByte){//GET request raw byte data
+    var http=new XMLHttpRequest(),s="",chunk=[],kL=false;msTimeout=D(msTimeout,10000);http.open("GET",src,true);http.responseType="arraybuffer";
+    if (token!=E){http.setRequestHeader("Authorization","Bearer "+token);}
+    function handleBuffer(data){if(kSByte){onload(data.target.response)}else{chunk=new Uint8Array(data.target.response);if(chunk!=null){for(var i=0;i<chunk.length;i++){s+=String.fromCharCode(chunk[i]);}}kL=true;onload(s);}}
+    http.addEventListener("load",handleBuffer,true);http.send();setTimeout(function(){if(!kL&&onTimeout!=E){onTimeout()}},msTimeout)
+}
+
+var dura=0;
+function loadSound(url) {
+    GETraw(url,
+      function(b){
+        actx.decodeAudioData(b,function(buffer){
+            var duration=buffer.duration;dura=duration;
+            const source=actx.createBufferSource();
+            source.buffer=buffer;
+            
+            var gainNode = actx.createGain();
+            gainNode.gain.value = 1;//0.1 // 10 %
+            gainNode.connect(actx.destination)
+            //IIRFilterNode,  BiquadFilterNode
+            //
+            source.connect(gainNode)
+            ///source.connect(actx.destination);
+                //source.loop = true;
+                //source.loopStart = 1;
+                //source.loopEnd = 4;
+            //source.start();
+            //source.start(start, offset, duration)
+            //source.playbackRate.value=32;//Playback rate
+            //source.detune.value=4800;//-1200 +1200  semitone percent// calculate playback rate, change tempo too 
+            actx.resume();
+            source.start(0, 0, duration);
+            //source.start();
+            //source.onended=function(){actx.close();}//fired when end the sound track
+            source.onended=function(){actx.suspend();source.stop;}//fired when end the sound track
+            
+            //actx.currentTime
+        }, function(){});
+      },
+      null,function(){},60000,true
+    );
+    
+    /*var request=new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+    request.send();*/
+}
+var ii=0;
+setInterval(function(){
+  ii++;
+  var sOut=ii+" : "+actx.currentTime+"  /  "+dura+" | "+actx.sampleRate+" Hz";
+  console.log(sOut);
+  document.body.innerHTML=sOut+"<br>";
+},20);
+/*function loadSound(url) {
+    //GETraw(src,onload,token,onTimeout,msTimeout)
+    var request=new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+    request.onload = function(){
+      actx.decodeAudioData(request.response,function(buffer){
+          const source = actx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(actx.destination);
+          source.start();    
+      }, function(){});
+    }
+    request.send();
+}*/
+
+
+var dogBarkingBuffer = null;
+var context = new AudioContext();
+/*
+function loadDogSound(url) {
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+    
+    // Decode asynchronously
+    request.onload = function() {
+    context.decodeAudioData(request.response, function(buffer) {
+        dogBarkingBuffer = buffer;
+    }, function(){});
+    }
+    request.send();
+}
+*/
+const audioPlay = async url => {
+  const context = new AudioContext();
+  const source = context.createBufferSource();
+  const audioBuffer = await fetch(url)
+    .then(function(res){return res.arrayBuffer()})
+    .then(function(ArrayBuffer){return context.decodeAudioData(ArrayBuffer)})
+  source.buffer = audioBuffer;
+  source.connect(context.destination);
+  source.start();
+};
+
+/*const audioPlay = async url => {
+  const context = new AudioContext();
+  const source = context.createBufferSource();
+  const audioBuffer = await fetch(url)
+    .then(res => res.arrayBuffer())
+    .then(ArrayBuffer => context.decodeAudioData(ArrayBuffer));
+
+  source.buffer = audioBuffer;
+  source.connect(context.destination);
+  source.start();
+};
+*/
+
+
+
+function playSound(buffer) {
+    var source = context.createBufferSource(); // creates a sound source
+    source.buffer = buffer;                    // tell the source which sound to play
+    source.connect(context.destination);       // connect the source to the context's destination (the speakers)
+    source.start();                          // play the source now
+}
+
+function audioGenerate(){
+    //const audioCtx=new AudioContext();
+    const audioCtx=actx;
+    const oscillator=audioCtx.createOscillator();
+    oscillator.type="sine";//"sine","square","sawtooth","triangle",  "custom"
+    oscillator.frequency.setValueAtTime(220, audioCtx.currentTime); // value in hertz
+    //setInterval(function(){oscillator.frequency.setValueAtTime(400+Math.random()*9000, audioCtx.currentTime);oscillator.type="sine"},100);
+    setInterval(function(){oscillator.frequency.setValueAtTime(400+Math.random()*2000, audioCtx.currentTime);oscillator.type="sine"},100);
+    oscillator.connect(audioCtx.destination);
+    oscillator.start();
+}
+//document.body.onclick=playSound;
+//document.body.onclick=audioPlay("sfx/white_4m.mp3");
+//document.body.onclick=loadSound("sfx/white_4m.mp3");
+//document.body.onclick=function(){loadSound("sfx/white_hq_10s.wav")};
+document.body.onclick=function(){audioGenerate();loadSound("sfx/white_hq_10s.wav")};
+//document.body.onclick=function(){loadSound("sfx/scottish_waltz.mp3")};
+
+//loadDogSound("sfx/white_4m.mp3");
+</script>
+</body>
+</html>
