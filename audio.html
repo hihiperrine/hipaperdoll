@@ -1,6 +1,8 @@
 <!DOCUMENT html>
 <html>
 <body>
+<audio controls id="teAu" src="sfx/angel_choir.mp3"></audio>
+<div id="ct" style='background-color:#0ff'></div>
 <script>
 const E=null;
 const body=document.body;
@@ -57,12 +59,13 @@ function loadSound(url) {
     request.responseType = 'arraybuffer';
     request.send();*/
 }
+const dct = document.getElementById("ct");
 var ii=0;
 setInterval(function(){
   ii++;
   var sOut=ii+" : "+actx.currentTime+"  /  "+dura+" | "+actx.sampleRate+" Hz";
   console.log(sOut);
-  document.body.innerHTML=sOut+"<br>";
+  ct.innerHTML=sOut+"<br>";
 },20);
 /*function loadSound(url) {
     //GETraw(src,onload,token,onTimeout,msTimeout)
@@ -142,12 +145,52 @@ function audioGenerate(){
     oscillator.connect(audioCtx.destination);
     oscillator.start();
 }
+function customWave(){
+  const real = new Float32Array(3);
+  const imag = new Float32Array(3);
+  const ac = new AudioContext();
+  const osc = ac.createOscillator();
+  //real[0]=0;real[1]=1; imag[0]=0;imag[1]=0;
+  real[0]=0;real[1]=1;real[2]=1; imag[0]=1;imag[1]=0;imag[2]=1;
+  const wave = ac.createPeriodicWave(real, imag);
+  osc.setPeriodicWave(wave);
+  osc.frequency.setValueAtTime(880, ac.currentTime);
+  
+  osc.connect(ac.destination);
+  osc.start();
+  osc.stop(2);
+}
 //document.body.onclick=playSound;
 //document.body.onclick=audioPlay("sfx/white_4m.mp3");
 //document.body.onclick=loadSound("sfx/white_4m.mp3");
 //document.body.onclick=function(){loadSound("sfx/white_hq_10s.wav")};
-document.body.onclick=function(){audioGenerate();loadSound("sfx/white_hq_10s.wav")};
+//document.body.onclick=function(){audioGenerate();loadSound("sfx/white_hq_10s.wav")};
+//document.body.onclick=function(){customWave();};
 //document.body.onclick=function(){loadSound("sfx/scottish_waltz.mp3")};
+
+
+
+
+function changeAudio(){
+  const audioCtx = new AudioContext();
+  //const myAudio = document.querySelector("audio");
+  const myAudio = document.getElementById("teAu");
+  const source = audioCtx.createMediaElementSource(myAudio);
+  
+  
+  //
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.value = 4;
+  gainNode.connect(audioCtx.destination);
+  
+  //const buffNode = audioCtx.createAudioBufferSourceNode
+  //const myArrayBuffer = audioCtx.createBuffer(2,audioCtx.sampleRate*4,audioCtx.sampleRate,);
+  
+  source.connect(gainNode);
+  myAudio.play();
+}
+//document.body.onclick=function(){audioGenerate();loadSound("sfx/white_hq_10s.wav")};
+document.body.onclick=function(){changeAudio()};
 
 //loadDogSound("sfx/white_4m.mp3");
 </script>
