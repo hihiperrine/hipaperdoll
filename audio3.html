@@ -372,7 +372,7 @@ class _AudioC{
         This.audioWB.loadBuffer(This.volume,This.buffer,function(){
           try{
           alert("baked");
-            if(This.isPlay){var crt=This.getCurrentTime();This.seekAWav(crt);This.playAWav();
+            if(This.isPlay){This.downloadWav();var crt=This.getCurrentTime();This.seekAWav(crt);This.playAWav();
               setTimeout(function(){This.pauseMain()},400)
             }
             if(This.loop){This.loopAWav(This.loop,This.loopStart,This.loopEnd)}
