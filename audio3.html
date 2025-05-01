@@ -370,11 +370,13 @@ class _AudioC{
     This.buildAWav=function(){This.reqBuildAWav=true;
       if(This.isLoaded){This.reqBuildAWav=false;
         This.audioWB.loadBuffer(This.volume,This.buffer,function(){
+          try{
           if(This.isPlay){var crt=This.getCurrentTime();This.seekAWav(crt);This.playAWav();
             setTimeout(function(){This.pauseMain()},400)
           }
           if(This.loop){This.loopAWav(This.loop,This.loopStart,This.loopEnd)}
           This.isBakedAWav=true;
+          }catch(e){alert(e);}
         });
         
         //alert(This.audioWB.soundDataMM.length);
