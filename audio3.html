@@ -1,0 +1,593 @@
+<!DOCUMENT html>
+<html>
+<body>
+<button id="btTest">Click</button>
+<div id="ct" style='background-color:#0ff'></div>
+
+<script>
+const E=null;
+const ERUN=function(){};
+const body=document.body;
+function D(v,x){return v==E?x:v;} //[D]efault value
+function Min(v1,v2){if (v1<v2){return v1;}return v2;}
+function pow(x, y){return Math.pow(x,y);}
+//var actx0;try{actx0=new AudioContext();}catch(e){}//alert('Web Audio API is not supported in this browser');}
+
+function GETraw(src,onload,token,onTimeout,msTimeout,kSByte){//GET request raw byte data
+    var http=new XMLHttpRequest(),s="",chunk=[],kL=false;msTimeout=D(msTimeout,10000);http.open("GET",src,true);http.responseType="arraybuffer";
+    if (token!=E){http.setRequestHeader("Authorization","Bearer "+token);}
+    function handleBuffer(data){if(kSByte){onload(data.target.response)}else{chunk=new Uint8Array(data.target.response);if(chunk!=null){for(var i=0;i<chunk.length;i++){s+=String.fromCharCode(chunk[i]);}}kL=true;onload(s);}}
+    http.addEventListener("load",handleBuffer,true);http.send();setTimeout(function(){if(!kL&&onTimeout!=E){onTimeout()}},msTimeout)
+}
+function download(filename,dat){var e=document.createElement("a"),bo=document.body;e.setAttribute("href",dat);e.setAttribute("download",filename);e.style.display="none";bo.appendChild(e);e.click();bo.removeChild(e);}
+function saveBin(filename,dat){download(filename,"data:application/octet-stream;base64,"+btoa(dat));}
+function save64(filename,dat){download(filename,"data:application/octet-stream;base64,"+dat);}
+</script>
+<script>
+
+/* 
+ * RIFFWAVE.js v0.03 - Audio encoder for HTML5 <audio> elements.
+ * Copyleft 2011 by Pedro Ladaria <pedro.ladaria at Gmail dot com & https://github.com/Pedro-Ladaria>
+ *
+ * Public Domain
+ *
+ * Changelog:
+ *
+ * 0.01 - First release
+ * 0.02 - New faster base64 encoding
+ * 0.03 - Support for 16bit samples
+ *
+ * Notes:
+ *
+ * 8 bit data is unsigned: 0..255
+ * 16 bit data is signed: âˆ’32,768..32,767
+ *
+ */
+
+var FastBase64 = {
+
+    chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+    encLookup: [],
+
+    Init: function() {
+        for (var i=0; i<4096; i++) {
+            this.encLookup[i] = this.chars[i >> 6] + this.chars[i & 0x3F];
+        }
+    },
+
+    Encode: function(src) {
+        var len = src.length;
+        var dst = '';
+        var i = 0;
+        while (len > 2) {
+            n = (src[i] << 16) | (src[i+1]<<8) | src[i+2];
+            dst+= this.encLookup[n >> 12] + this.encLookup[n & 0xFFF];
+            len-= 3;
+            i+= 3;
+        }
+        if (len > 0) {
+            var n1= (src[i] & 0xFC) >> 2;
+            var n2= (src[i] & 0x03) << 4;
+            if (len > 1) n2 |= (src[++i] & 0xF0) >> 4;
+            dst+= this.chars[n1];
+            dst+= this.chars[n2];
+            if (len == 2) {
+                var n3= (src[i++] & 0x0F) << 2;
+                n3 |= (src[i] & 0xC0) >> 6;
+                dst+= this.chars[n3];
+            }
+            if (len == 1) dst+= '=';
+            dst+= '=';
+        }
+        return dst;
+    } // end Encode
+
+}
+
+FastBase64.Init();
+
+var RIFFWAVE = function(data) {
+
+    this.data = [];        // Array containing audio samples
+    this.wav = [];         // Array containing the generated wave file
+    this.dataURI = '';     // http://en.wikipedia.org/wiki/Data_URI_scheme
+
+    this.header = {                         // OFFS SIZE NOTES
+        chunkId      : [0x52,0x49,0x46,0x46], // 0    4    "RIFF" = 0x52494646
+        chunkSize    : 0,                     // 4    4    36+SubChunk2Size = 4+(8+SubChunk1Size)+(8+SubChunk2Size)
+        format       : [0x57,0x41,0x56,0x45], // 8    4    "WAVE" = 0x57415645
+        subChunk1Id  : [0x66,0x6d,0x74,0x20], // 12   4    "fmt " = 0x666d7420
+        subChunk1Size: 16,                    // 16   4    16 for PCM
+        audioFormat  : 1,                     // 20   2    PCM = 1
+        numChannels  : 1,                     // 22   2    Mono = 1, Stereo = 2...
+        sampleRate   : 8000,                  // 24   4    8000, 44100...
+        byteRate     : 0,                     // 28   4    SampleRate*NumChannels*BitsPerSample/8
+        blockAlign   : 0,                     // 32   2    NumChannels*BitsPerSample/8
+        bitsPerSample: 8,                     // 34   2    8 bits = 8, 16 bits = 16
+        subChunk2Id  : [0x64,0x61,0x74,0x61], // 36   4    "data" = 0x64617461
+        subChunk2Size: 0                      // 40   4    data size = NumSamples*NumChannels*BitsPerSample/8
+    };
+
+    function u32ToArray(i) {
+        return [i&0xFF, (i>>8)&0xFF, (i>>16)&0xFF, (i>>24)&0xFF];
+    }
+
+    function u16ToArray(i) {
+        return [i&0xFF, (i>>8)&0xFF];
+    }
+
+    function split16bitArray(data) {
+        var r = [];
+        var j = 0;
+        var len = data.length;
+        for (var i=0; i<len; i++) {
+            r[j++] = data[i] & 0xFF;
+            r[j++] = (data[i]>>8) & 0xFF;
+        }
+        return r;
+    }
+
+    this.Make = function(data) {
+        if (data instanceof Array) this.data = data;
+        this.header.blockAlign = (this.header.numChannels * this.header.bitsPerSample) >> 3;
+        this.header.byteRate = this.header.blockAlign * this.sampleRate;
+        this.header.subChunk2Size = this.data.length * (this.header.bitsPerSample >> 3);
+        this.header.chunkSize = 36 + this.header.subChunk2Size;
+
+        this.wav = this.header.chunkId.concat(
+            u32ToArray(this.header.chunkSize),
+            this.header.format,
+            this.header.subChunk1Id,
+            u32ToArray(this.header.subChunk1Size),
+            u16ToArray(this.header.audioFormat),
+            u16ToArray(this.header.numChannels),
+            u32ToArray(this.header.sampleRate),
+            u32ToArray(this.header.byteRate),
+            u16ToArray(this.header.blockAlign),
+            u16ToArray(this.header.bitsPerSample),    
+            this.header.subChunk2Id,
+            u32ToArray(this.header.subChunk2Size),
+            (this.header.bitsPerSample == 16) ? split16bitArray(this.data) : this.data
+        );
+        this.dataURI = 'data:audio/wav;base64,'+FastBase64.Encode(this.wav);
+    };
+
+    if (data instanceof Array) this.Make(data);
+
+}; // end RIFFWAVE
+
+
+
+</script>
+
+<script>
+		/*var audioMM = new Audio();
+		var waveMM = new RIFFWAVE();
+		var soundDataMM=[];
+		waveMM.header.sampleRate = 44100;
+		waveMM.header.numChannels = 1;
+		waveMM.header.bitsPerSample = 16;
+		
+		var tempo=60;
+		var fsam=waveMM.header.sampleRate,bitDepth=waveMM.header.bitsPerSample;
+		var Gsig=0,Dmax=0; if (bitDepth==8){Gsig=128;Dmax=127} else if (bitDepth==16){Gsig=0;Dmax=32767}
+		var f0=1270*(fsam/8000),Tstep=8192*(fsam/8000)*(60/tempo);
+
+		var R2s=2,RX=12,froot=440,Oroot=4,Ophase=-8;// 4_-9; -1_-12; 4_-8
+				
+		function playNote(Hz,Len,FunPl){//alert(Hz)
+			if (Len==='' || Len==null){Len=1}
+			if (!FunPl){FunPl=function(t,Freq){return Math.sin(t*Freq)}}
+			audioMM.pause();
+			var t=0;
+			soundDataMM=[];
+			var msa=Len*Tstep;
+			for (var i=1;i<msa;i++){
+				t=i/f0;
+				soundDataMM[i]=Gsig+Math.round(Dmax* FunPl(t,Hz) );
+			}
+			waveMM.Make(soundDataMM);
+			audioMM.src = waveMM.dataURI;
+			audioMM.play();
+		}
+		document.body.onclick=function(){
+      playNote(880,1,function(t,Hz){return Math.sin(t*Hz)})
+    }*/
+
+class _audioWBuff{//HTML5 audio from .wav build from audiocontext buffer data
+  constructor(){
+    const This=this;
+    var audioMM = new Audio();This.audioMM=audioMM;
+		var waveMM = new RIFFWAVE();
+		var soundDataMM=[];This.soundDataMM=soundDataMM;
+		waveMM.header.sampleRate = 44100;
+		waveMM.header.numChannels = 1;
+		waveMM.header.bitsPerSample = 16;
+		
+		var tempo=60;
+		var fsam=waveMM.header.sampleRate,bitDepth=waveMM.header.bitsPerSample;
+		var Gsig=0,Dmax=0; if (bitDepth==8){Gsig=128;Dmax=127} else if (bitDepth==16){Gsig=0;Dmax=32767}
+		var f0=1270*(fsam/8000),Tstep=8192*(fsam/8000)*(60/tempo);
+
+		var R2s=2,RX=12,froot=440,Oroot=4,Ophase=-8;// 4_-9; -1_-12; 4_-8
+				
+		This.playNote=function(Hz,Len,FunPl){//alert(Hz)
+			if (Len==='' || Len==null){Len=1}
+			if (!FunPl){FunPl=function(t,Freq){return Math.sin(t*Freq)}}
+			audioMM.pause();
+			var t=0;
+			soundDataMM=[];
+			var msa=Len*Tstep;
+			for (var i=1;i<msa;i++){t=i/f0;soundDataMM[i]=Gsig+Math.round(Dmax* FunPl(t,Hz) );}
+			waveMM.Make(soundDataMM);
+			audioMM.src = waveMM.dataURI;
+			audioMM.play();
+		}
+		//document.body.onclick=function(){This.playNote(880,1,function(t,Hz){return Math.sin(t*Hz)})}
+    var aBuffDat=[];//buffer one time input
+    This.pc=0;
+    This.loadBuffer=function(vol,aBuff,onDone){
+      audioMM.pause();
+      waveMM.header.sampleRate = aBuff.sampleRate;
+      waveMM.header.numChannels = Min(2,aBuff.numberOfChannels);
+      waveMM.header.bitsPerSample = 16;
+      tempo=60;
+      fsam=waveMM.header.sampleRate;bitDepth=waveMM.header.bitsPerSample;
+      Gsig=0,Dmax=0; if (bitDepth==8){Gsig=128;Dmax=127} else if (bitDepth==16){Gsig=0;Dmax=32767}
+      f0=1270*(fsam/8000);Tstep=8192*(fsam/8000)*(60/tempo);
+      soundDataMM=[];This.soundDataMM=soundDataMM;//[[ch1],[ch2]]
+			var msa=aBuff.length;
+      if(aBuffDat.length==0){for(var i=0;i<waveMM.header.numChannels;i++){aBuffDat.push(aBuff.getChannelData(i));}} //.getChannelData(channel)
+			for(var i=0;i<msa;i++){//t=i/f0;//soundDataMM[i]=Gsig+Math.round(Dmax* aBuff[i]);
+				soundDataMM.push(Gsig+Math.round(Dmax* aBuffDat[0][i])*vol);
+        if(waveMM.header.numChannels>1){soundDataMM.push(Gsig+Math.round(Dmax* aBuffDat[1][i])*vol);}
+        This.pc=i/msa;
+			}
+			waveMM.Make(soundDataMM);
+			audioMM.src = waveMM.dataURI;
+			//This.play();
+      if(onDone!=null){onDone();}
+    }
+    This.play=function(){audioMM.play();}
+    This.pause=function(){audioMM.pause();}
+    This.downloadWav=function(){save64("Audio "+Date.now()+".wav",waveMM.dataURI.substring(22,waveMM.dataURI.length));}
+    This.getCurrentTime=function(){return audioMM.currentTime}
+    This.setCurrentTime=function(v){audioMM.currentTime=D(v,audioMM.currentTime)}
+    This.setLoop=function(k,sSta,sEnd){//bool, sec start, sec end
+      audioMM.loop=D(k,audioMM.loop);
+      audioMM.ontimeupdate=function(){
+        if(audioMM.sLim==null&&((audioMM.duration*1+"")!="NaN")){audioMM.sLim=audioMM.duration*1;}
+        if(audioMM.sLim!=null&&audioMM.currentTime>=(sEnd>0?sEnd:(audioMM.sLim+sEnd))){audioMM.currentTime=sSta;}
+      };
+    }
+    This.setPlaybackRate=function(v){audioMM.playbackRate=D(v,audioMM.playbackRate);}
+    This.seek=function(v){audioMM.currentTime=v}
+    
+  }
+  
+}
+
+</script>
+
+<script>
+function newAudioContext(){return new (window.AudioContext||window.webkitAudioContext||window.mozAudioContext||window.msAudioContext)();}
+class _AudioC{
+  //Loop canbe set by assign .loop=true; and other before .play()
+  //Or use setLoop(k,secStart,secEnd);  secEnd < 0 will be calc backward
+  //.setVolume  .setPlaybackRate  .setDetune
+  //.getCurrentTime() result is calibrated with speed and start time
+  constructor(src){
+    const This=this;
+    const actx=newAudioContext();This.actx=actx;
+    This.src=src;
+    var ctrl=actx.createBufferSource();This.ctrl=ctrl;
+    This.duration=0;
+    This.isLoaded=false;
+    This.reqPlay=false;
+    This.reqBuildAWav=false;
+    This.volume=1; This.playbackRate=1; This.detune=0;
+    This.rateMode=0;//0,1,2:none apply, playbackRate, detune
+    This.playAt=0;This.playAt1=-1;
+    This.kAutoBake=false;//AUTO Bake for ios offscreen play
+    var gainNode=actx.createGain();This.gainNode=gainNode;
+      gainNode.gain.value=This.volume;//0.1 // 10 %
+      gainNode.connect(actx.destination);
+    //IIRFilterNode,  BiquadFilterNode
+    //actx.currentTime
+    This.load=function(_src){This.src=D(_src,This.src);
+      GETraw(This.src,function(b){
+          actx.decodeAudioData(b,function(buffer){
+              This.duration=buffer.duration;//.duration  buffer.length;  .sampleRate  .numberOfChannels
+              This.buffer=buffer;//.copyFromChannel(),  copyToChannel(),  getChannelData()
+              This.isLoaded=true;
+              if(This.reqPlay){This.play()}
+              if(This.reqBuildAWav||This.kAutoBake){This.buildAWav()}
+          }, function(){/*ERR*/});
+        },
+        null,function(){/*TimeOut*/},60000,true);
+    }
+    if(src!=E){This.load();}
+    
+    This.loadConfig=function(){//reapply config set to new play turn
+        This.setLoop();
+        if(This.rateMode==1){This.setPlaybackRate();}else if(This.rateMode==2){This.setDetune();}
+    }
+    This.caliT=0;//calibrate current time
+    This.rSpeed=1;//ratio speed calculated from playbackrate and detune
+    This.getCurrentTime=function(){
+      if(This.loop){return This.loopStart+(This.playAt+(actx.currentTime-This.caliT)*This.rSpeed-This.loopStart)%This.loopLength;}
+      else{return This.playAt+(actx.currentTime-This.caliT)*This.rSpeed;}
+    }
+    This.isPlay=false;
+    This.isPlayMain=false;
+    This.playMain=function(sec){This.reqPlay=true;if(sec==E&&This.playAt1!=-1){sec=This.playAt1;This.playAt1=-1}
+      //try{actx.suspend();ctrl.stop();This.gainNode.disconnect()}catch(e){}
+      try{actx.suspend();ctrl.stop();ctrl.onended=function(){}}catch(e){}
+      ctrl=actx.createBufferSource();This.ctrl=ctrl;
+      ctrl.buffer=This.buffer;
+      if(This.isLoaded){
+        ctrl.connect(This.gainNode);This.playAt=D(sec,This.playAt);
+        This.caliT=actx.currentTime;actx.resume();
+        ctrl.start(0, This.playAt, This.duration);This.loopEnd=Min(This.loopEnd,This.duration);This.isPlay=true;This.isPlayMain=true;
+        This.loadConfig();
+        This.reqPlay=false;
+      }
+      ctrl.onended=function(){actx.suspend();ctrl.stop();This.isPlay=false;This.isPlayMain=false;}//fired when end the sound track
+    }
+    This.play=function(sec){
+      if(This.isBakedAWav){if(sec!=E){This.seekAWav(sec);}This.playAWav();}
+      else{This.playMain(sec)}
+    }
+    This.pause=function(){actx.suspend();ctrl.stop();This.isPlay=false;This.isPlayMain=false;This.playAt1=This.getCurrentTime();This.pauseAWav();}
+    This.pauseMain=function(){actx.suspend();ctrl.stop();This.isPlayMain=false;This.playAt1=This.getCurrentTime();}
+    This.loop=false;This.loopStart=0;This.loopEnd=1000000000;This.loopLength=0;
+    This.slEnd=This.loopEnd;
+    This.setLoop=function(k,sSta,sEnd){//bool, sec start, sec end
+      var l=This.duration!=0?This.duration:1000000000;This.slEnd=D(sEnd,This.slEnd);if(This.slEnd<0&&l>0&&l<1000000000){This.slEnd=l+This.slEnd;}
+      This.loop=D(k,This.loop);This.loopStart=Min(D(sSta,This.loopStart),l);This.loopEnd=Min(D(This.slEnd>0?This.slEnd:This.loopEnd,This.loopEnd),l);
+      ctrl.loop=This.loop;ctrl.loopStart=This.loopStart;ctrl.loopEnd=This.loopEnd;
+      This.loopLength=This.loopEnd-This.loopStart;
+    }
+    This.ssSetVol=0;
+    This.setVolume=function(v){This.ssSetVol+=1;const SS=This.ssSetVol;
+      This.volume=D(v,This.volume);gainNode.gain.value=This.volume;
+      if(This.isPlay&&This.isBakedAWav){
+        var crT=This.getCurrentTimeAWav();
+        This.playMain(crT);
+        setTimeout(function(){This.pauseAWav();},400);
+        setTimeout(function(){if(SS==This.ssSetVol){This.buildAWav()}},1000);
+        
+      }
+    }
+    
+    This.setPlaybackRate=function(v){This.rateMode=1;This.playbackRate=D(v,This.playbackRate);ctrl.playbackRate.value=This.playbackRate;This.rSpeed=This.playbackRate;}
+    This.setDetune=function(v){This.rateMode=2;This.detune=D(v,This.detune);ctrl.detune.value=This.detune;This.rSpeed=pow(2,(This.detune/100)/12)}
+    //ctrl.playbackRate.value=32;//Playback rate
+    //ctrl.detune.value=4800;//-1200 +1200  semitone percent// calculate playback rate, change tempo too 
+    /// Audio Wave from buffer, for baking audio volume safari ios and play audio when screen sleep
+    This.audioWB=new _audioWBuff();
+    This.isBakedAWav=false;
+    This.buildAWav=function(){This.reqBuildAWav=true;
+      if(This.isLoaded){This.reqBuildAWav=false;
+        This.audioWB.loadBuffer(This.volume,This.buffer,function(){
+          if(This.isPlay){var crt=This.getCurrentTime();This.seekAWav(crt);This.playAWav();
+            setTimeout(function(){This.pauseMain()},400)
+          }
+          if(This.loop){This.loopAWav(This.loop,This.loopStart,This.loopEnd)}
+          This.isBakedAWav=true;
+        });
+        
+        //alert(This.audioWB.soundDataMM.length);
+      }
+    }
+    This.playAWav=function(){This.audioWB.play();This.isPlay=true;}
+    This.downloadWav=function(){This.audioWB.downloadWav();}
+    This.pauseAWav=function(){This.audioWB.pause();}
+    This.seekAWav=function(v){This.audioWB.seek(v)}
+    This.loopAWav=function(k,a,b){This.audioWB.setLoop(k,a,b)}
+    This.getCurrentTimeAWav=function(){return This.audioWB.getCurrentTime()}
+    
+  }
+}
+
+
+var dura=0;
+function loadSound(url) {
+    GETraw(url,
+      function(b){
+        actx.decodeAudioData(b,function(buffer){
+            var duration=buffer.duration;dura=duration;
+            const source=actx.createBufferSource();
+            source.buffer=buffer;
+            
+            var gainNode = actx.createGain();
+            gainNode.gain.value = 1;//0.1 // 10 %
+            gainNode.connect(actx.destination)
+            //IIRFilterNode,  BiquadFilterNode
+            //
+            source.connect(gainNode)
+            ///source.connect(actx.destination);
+                //source.loop = true;
+                //source.loopStart = 1;
+                //source.loopEnd = 4;
+            //source.start();
+            //source.start(start, offset, duration)
+            //source.playbackRate.value=32;//Playback rate
+            //source.detune.value=4800;//-1200 +1200  semitone percent// calculate playback rate, change tempo too 
+            actx.resume();
+            source.start(0, 0, duration);
+            //source.start();
+            //source.onended=function(){actx.close();}//fired when end the sound track
+            source.onended=function(){actx.suspend();source.stop;}//fired when end the sound track
+            
+            //actx.currentTime
+        }, function(){});
+      },
+      null,function(){},60000,true
+    );
+    
+    /*var request=new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+    request.send();*/
+}
+
+/*function loadSound(url) {
+    //GETraw(src,onload,token,onTimeout,msTimeout)
+    var request=new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+    request.onload = function(){
+      actx.decodeAudioData(request.response,function(buffer){
+          const source = actx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(actx.destination);
+          source.start();    
+      }, function(){});
+    }
+    request.send();
+}*/
+
+
+
+const audioPlay = async url => {
+  const context = new AudioContext();
+  const source = context.createBufferSource();
+  const audioBuffer = await fetch(url)
+    .then(function(res){return res.arrayBuffer()})
+    .then(function(ArrayBuffer){return context.decodeAudioData(ArrayBuffer)})
+  source.buffer = audioBuffer;
+  source.connect(context.destination);
+  source.start();
+};
+
+/*const audioPlay = async url => {
+  const context = new AudioContext();
+  const source = context.createBufferSource();
+  const audioBuffer = await fetch(url)
+    .then(res => res.arrayBuffer())
+    .then(ArrayBuffer => context.decodeAudioData(ArrayBuffer));
+
+  source.buffer = audioBuffer;
+  source.connect(context.destination);
+  source.start();
+};
+*/
+
+
+
+function playSound(buffer) {
+    var source = context.createBufferSource(); // creates a sound source
+    source.buffer = buffer;                    // tell the source which sound to play
+    source.connect(context.destination);       // connect the source to the context's destination (the speakers)
+    source.start();                          // play the source now
+}
+
+function audioGenerate(){
+    //const audioCtx=new AudioContext();
+    const audioCtx=actx;
+    const oscillator=audioCtx.createOscillator();
+    oscillator.type="sine";//"sine","square","sawtooth","triangle",  "custom"
+    oscillator.frequency.setValueAtTime(220, audioCtx.currentTime); // value in hertz
+    //setInterval(function(){oscillator.frequency.setValueAtTime(400+Math.random()*9000, audioCtx.currentTime);oscillator.type="sine"},100);
+    setInterval(function(){oscillator.frequency.setValueAtTime(400+Math.random()*2000, audioCtx.currentTime);oscillator.type="sine"},100);
+    oscillator.connect(audioCtx.destination);
+    oscillator.start();
+}
+function customWave(){
+  const real = new Float32Array(3);
+  const imag = new Float32Array(3);
+  const ac = new AudioContext();
+  const osc = ac.createOscillator();
+  //real[0]=0;real[1]=1; imag[0]=0;imag[1]=0;
+  real[0]=0;real[1]=1;real[2]=1; imag[0]=1;imag[1]=0;imag[2]=1;
+  const wave = ac.createPeriodicWave(real, imag);
+  osc.setPeriodicWave(wave);
+  osc.frequency.setValueAtTime(880, ac.currentTime);
+  
+  osc.connect(ac.destination);
+  osc.start();
+  osc.stop(2);
+}
+//document.body.onclick=playSound;
+//document.body.onclick=audioPlay("sfx/white_4m.mp3");
+//document.body.onclick=loadSound("sfx/white_4m.mp3");
+//document.body.onclick=function(){loadSound("sfx/white_hq_10s.wav")};
+//document.body.onclick=function(){audioGenerate();loadSound("sfx/white_hq_10s.wav")};
+//document.body.onclick=function(){customWave();};
+//document.body.onclick=function(){loadSound("sfx/scottish_waltz.mp3")};
+function changeAudio(){
+  const audioCtx = new AudioContext();
+  //const myAudio = document.querySelector("audio");
+  const myAudio = document.getElementById("teAu");
+  const source = audioCtx.createMediaElementSource(myAudio);
+  //
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.value = 1;
+  gainNode.connect(audioCtx.destination);
+  //const buffNode = audioCtx.createAudioBufferSourceNode
+  //const myArrayBuffer = audioCtx.createBuffer(2,audioCtx.sampleRate*4,audioCtx.sampleRate,);
+  source.connect(gainNode);
+  myAudio.play();
+}
+//document.body.onclick=function(){audioGenerate();loadSound("sfx/white_hq_10s.wav")};
+var Au1=new _AudioC("sfx/white_hq_10s.wav");
+//var Au1=new _AudioC("sfx/scottish_waltz.mp3");
+//Au1.buildAWav();
+//Au1.setPlaybackRate(2);
+
+document.getElementById("btTest").onclick=function(){
+  /*changeAudio();
+  var aw=document.getElementById("auwhite");
+  aw.play();
+  aw.volume=0.5;
+  aw.loop=true;*/
+  //Au1.loop=true;
+  
+  /*Au1.play(3);
+  //Au1.play(0);
+  Au1.setLoop(true,1,-30);
+  Au1.setVolume(1);*/
+  Au1.play(0);
+  //Au1.setLoop(true,1,-1);
+  Au1.setLoop(true,1,8);
+    setTimeout(function(){Au1.buildAWav()},1000);
+    /*setTimeout(function(){Au1.setVolume(0.99)},2000);
+    setTimeout(function(){Au1.setVolume(0.8)},2100);
+    setTimeout(function(){Au1.setVolume(0.7)},2200);
+    setTimeout(function(){Au1.setVolume(0.6)},2300);
+    setTimeout(function(){Au1.setVolume(0.5)},2400);
+    setTimeout(function(){Au1.setVolume(0.4)},2500);
+    setTimeout(function(){Au1.pause();},5200);
+    setTimeout(function(){Au1.play();},7200);*/
+    
+    //Au1.playAWav();
+    //Au1.audioWB.setLoop(true,1,-1);
+    //Au1.audioWB.setPlaybackRate(2);
+  //Au1.downloadWav();
+  
+  //setTimeout(function(){Au1.pause();},3000);
+  //setTimeout(function(){Au1.play();},6000);
+  //Au1.setPlaybackRate(2);
+  //Au1.setDetune(-1200);
+};
+
+const dct=document.getElementById("ct");
+//After edit few sec -> bake, switch mode, play at
+//                      bake progress
+//   reedit volume -> play at sec
+//                    rebake
+//                     
+// Auto bake mode
+var ii=0;
+/*setInterval(function(){
+  ii++;
+  var sOut=ii+" : "+Au1.getCurrentTime()+"  /  "+Au1.duration+" | "+Au1.actx.sampleRate+" Hz | "+Au1.loopStart+" - "+Au1.loopEnd;
+  console.log(sOut);
+  ct.innerHTML=sOut+"<br>";
+},20);*/
+
+// .autoplay
+</script>
+</body>
+</html>
