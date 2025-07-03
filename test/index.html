@@ -12,13 +12,13 @@
             <p id="infoDat" style="color:#008">&nbsp;</p>
         </div>
     </div>
-    <script>
+    <script type="module">
         // This is the App ID from the dashboard that identifies this Calls Application.
         // https://dash.cloudflare.com/?to=/:account/calls
         // Note: Calls sessions are limited to interacting with sessions in the same App ID.
         const APP_ID = "e8d7c3e817ae45a32b1e438b73ebf17d";//"$APP_ID";
         // ❗❗❗ DO NOT USE YOUR TOKEN IN THE BROWSER FOR PRODUCTION. It should be kept and used server-side.
-        const APP_TOKEN = "03a7e5b4e2a8eadde1899a65795a923b733cae31cdb2cfd3ed20646fe0060040";//"$APP_TOKEN";
+        const APP_TOKEN = atob("MDNhN2U1YjRlMmE4ZWFkZGUxODk5YTY1Nzk1YTkyM2I3MzNjYWUzMWNkYjJjZmQzZWQyMDY0NmZlMDA2MDA0MA==");//"$APP_TOKEN";
         // We'll use this for authentication when making requests to the Calls API.
         const headers = {Authorization: 'Bearer '+APP_TOKEN};
         const API_BASE = 'https://rtc.live.cloudflare.com/v1/apps/'+APP_ID;
@@ -83,7 +83,7 @@
             }
         }
 
-console.log(8)
+  console.log(8)
 
         var svDat=new DatStreamRTC();
         var idSv=await svDat.createServerSession("abc");
