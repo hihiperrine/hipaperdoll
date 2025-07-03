@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /></head>
+<body>
+    <div class="grid">
+        <h1 id="heading">Calls DataChannel Test SV</h1>
+        <p>This example establishes two datachannels: one publishes data and the other one subscribes, the test measures how fast a message travels to and from the server.</p>
+        <div>
+            <button id="btSend" style="display: none">Send</button>
+            <p id="tInfo">&nbsp;</p>
+            <button id="btConnect" >Connect</button>
+            <p id="infoDat" style="color:#008">&nbsp;</p>
+        </div>
+    </div>
+    <script>
+        // This is the App ID from the dashboard that identifies this Calls Application.
+        // https://dash.cloudflare.com/?to=/:account/calls
+        // Note: Calls sessions are limited to interacting with sessions in the same App ID.
+        const APP_ID = "e8d7c3e817ae45a32b1e438b73ebf17d";//"$APP_ID";
+        // ❗❗❗ DO NOT USE YOUR TOKEN IN THE BROWSER FOR PRODUCTION. It should be kept and used server-side.
+        const APP_TOKEN = "03a7e5b4e2a8eadde1899a65795a923b733cae31cdb2cfd3ed20646fe0060040";//"$APP_TOKEN";
+        // We'll use this for authentication when making requests to the Calls API.
+        const headers = {Authorization: 'Bearer '+APP_TOKEN};
+        const API_BASE = 'https://rtc.live.cloudflare.com/v1/apps/'+APP_ID;
+
+        //const echoMagic = crypto.randomUUID()
+        var eStaBT = document.getElementById("btSend")
+        var eConnect = document.getElementById("btConnect")
+        var eStats = document.getElementById("tInfo")
+        var eDat = document.getElementById("infoDat")
+
+        class DatStreamRTC{
+            constructor(){const This=this;
+                var listIceSv=[{"urls":"stun:stun.cloudflare.com:3478"},
+                             //{'url': 'turn:YOUR_TURN_SERVER_ADDRESS:3478','username':YOUR_COTURN_USERNAME,'credential': YOUR_COTURN_PASSWORD},
+                ];
+                async function createCallsSession(listIceServers){
+                    const peerConnection = new RTCPeerConnection({bundlePolicy:"max-bundle",iceServers:listIceServers});
+                    const dataChannel = peerConnection.createDataChannel("server-events");// create an offer and set it as the local description
+                    await peerConnection.setLocalDescription(await peerConnection.createOffer());
+                    const {sessionId, sessionDescription} = await fetch(API_BASE+'/sessions/new',
+                        {method:"POST", headers, body:JSON.stringify({sessionDescription:peerConnection.localDescription,}),}
+                    ).then((res)=>res.json());
+                    const connected=new Promise((res,rej)=>{setTimeout(rej,10000);//5000);//connect timeout
+                        const iceConnectionStateChangeHandler=()=>{if (peerConnection.iceConnectionState==="connected"){
+                                peerConnection.removeEventListener("iceconnectionstatechange",iceConnectionStateChangeHandler);
+                                res(undefined);
+                        }};
+                        peerConnection.addEventListener("iceconnectionstatechange",iceConnectionStateChangeHandler);
+                    });
+                    await peerConnection.setRemoteDescription(sessionDescription);// Once both local and remote descriptions are set, the ICE process begins
+                    await connected;// Wait until the peer connection's iceConnectionState is "connected"
+                    return {peerConnection,sessionId,dataChannel};
+                }
+                
+                
+                This.send=function(s){}
+                This.createServerSession=async function(serverChannelName){
+                    const session = await createCallsSession(listIceSv),_id=session.sessionId;
+                    const ch1Res = await fetch(API_BASE+'/sessions/'+_id+'/datachannels/new',
+                        {method:"POST",headers,body:JSON.stringify({dataChannels:[{location:"local",dataChannelName:serverChannelName,},],}),}
+                    ).then((res)=>res.json());
+                    const channel = session.peerConnection.createDataChannel("",{negotiated:true,id:ch1Res.dataChannels[0].id,});
+                    //const channel = session.peerConnection.createDataChannel("anyname",{negotiated:true,id:channel1resp.dataChannels[0].id,});
+                    This.serverChannel=channel;
+                    This.send=function(s){channel.send(s);}
+                    return _id;//[_id,channel];
+                }
+                This.ondata=function(s){}
+                This.createClientSession=async function(serverSeesionId,serverChannelName,ondata){
+                    const session2 = await createCallsSession(listIceSv),_id=session2.sessionId;
+                    const ch1SubRes = await fetch(API_BASE+'/sessions/'+session2.sessionId+'/datachannels/new',
+                        {method:"POST",headers,body:JSON.stringify({dataChannels:[{location:"remote",sessionId:serverSeesionId,dataChannelName:serverChannelName},],}),}
+                    ).then((res)=>res.json());
+                    const channel1cli = session2.peerConnection.createDataChannel("",{negotiated:true,id:ch1SubRes.dataChannels[0].id,});
+                    channel1cli.addEventListener('message',(e)=>{// On Message
+                        if(ondata!=null){try{ondata(e.data)}catch(e){}}
+                        else{try{This.ondata(e.data)}catch(e){}}
+                    })
+                    return _id;
+                }
+                
+            }
+        }
+
+console.log(8)
+
+        var svDat=new DatStreamRTC();
+        var idSv=await svDat.createServerSession("abc");
+
+        eStats.textContent="Your server id : "+idSv;
+        console.log(9);        
+        eStaBT.style.display = "block";//Show button ready to test
+        eStaBT.onclick=function(){
+          var a=prompt("Msg");
+          svDat.send(a)
+        }
+
+        
+        var cliDat=new DatStreamRTC();
+        eConnect.onclick=async function(){
+          var a=prompt("Enter server id");
+          var idCl=await cliDat.createClientSession(a,"abc",function(s){
+            eDat.textContent=s;
+          });
+        }
+        
+        
+        
+        
+        
+        ///alert(lSv)
+
+     
+    </script>
+</body>
+</html>
